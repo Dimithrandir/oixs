@@ -1,0 +1,44 @@
+{
+	"manifest_version": 2,
+	"name": "oixs",
+	"version": "0.1",
+
+	"author": "Dimithrandir",
+
+	"description": "Open links with a delay",
+	"homepage_url": "https://github.com/Dimithrandir/oixs",
+
+	"icons": {
+		"16": "img/oixs.svg",
+		"32": "img/oixs.svg",
+		"48": "img/oixs.svg",
+		"64": "img/oixs.svg",
+		"128": "img/oixs.svg"
+	},
+
+	"permissions": [
+		"activeTab",
+		"contextMenus"
+	],
+
+	"background": {
+		"scripts": ["background.js"]
+	},
+
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"css": ["content.css"],
+			"js": ["content.js"]
+		}
+	],
+
+	"browser_action": {
+		"default_icon": {
+			"16": "img/oixs.svg",
+			"32": "img/oixs.svg"
+		},
+		"default_title": "oixs",
+		"default_popup": "popup.html"
+	}
+}

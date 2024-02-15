@@ -1,0 +1,87 @@
+body {
+	background: #f2f2f2;
+	width: 320px;
+	font-family: sans-serif;
+	color: #333;
+}
+
+#no-pending-links {
+	padding: 18px 0;
+	display: block;
+	width: 100%;
+	text-align: center;
+	background: #fff;
+	border-radius: 8px;
+}
+
+#pending-links-label {
+	margin-left: 5px;
+}
+
+#pending-links-label::after {
+	content: '';
+	display: block;
+	height: 1px;
+	width: 100%;
+	background: #333;
+	margin: 5px 0;
+}
+
+.pending-link-item {
+	background: #fff;
+	margin: 5px 0;
+	display: flex;
+	padding: 2px 0;
+	border-radius: 3px;
+}
+
+.pending-link-address {
+	flex: auto;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 12px;
+	align-self: center;
+	margin-left: 5px;
+}
+
+.pending-link-timer {
+	font-weight: bold;
+	align-self: center;
+}
+
+.pending-link-cancel {
+	margin: 0 5px;
+	background: #ccc;
+	width: 20px;
+	height: 20px;
+	min-width: 20px;
+	border-radius: 50%;
+	position: relative;
+	transform: rotate(45deg);
+	cursor: pointer;
+}
+
+.pending-link-cancel::before {
+	content: '';
+	position: absolute;
+	top: 45%;
+	left: 25%;
+	width: 50%;
+	height: 10%;
+	background: #fff;
+}
+
+.pending-link-cancel::after {
+	content: '';
+	position: absolute;
+	top: 25%;
+	left: 45%;
+	width: 10%;
+	height: 50%;
+	background: #fff;
+}
+
+.pending-link-cancel:hover {
+	background: #f00;
+}

@@ -1,0 +1,20 @@
+.oixs-window {
+	border: 3px solid black;
+	position: absolute !important;
+	top: 200px;
+	left: 300px;
+}
+
+#oixs-popup {
+	position: absolute !important;
+	top: 200px;
+	left: 300px;
+	transform-origin: 50%;
+	transform: rotate(-90deg);
+	/*opacity: 85%;*/
+	z-index: 400000;
+}
+
+#oixs-popup path {
+	filter: drop-shadow(0 0 2px #30303050);
+}
