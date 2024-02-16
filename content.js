@@ -105,10 +105,22 @@ function removePopupArc() {
 	arcPr.d = 120;
 }
 
+// Make sure the popup arc doesn't get out of screen
+function setPopupArcCoords(pageX, pageY, clientX, clientY) {
+	// this is to be read from storage...
+	let rightSide = true;
+	if (rightSide) {
+		xPop = (clientX + size > window.innerWidth) ? pageX - size : pageX;
+	}
+	else {
+		xPop = (clientX - size < 0) ? pageX : pageX - size;
+	}
+	yPop = (clientY + size > window.innerHeight) ? pageY - size : pageY;
+}
+
 document.body.addEventListener('click', (event) => {
 	if (event.altKey && (event.srcElement.nodeName === 'A' || event.srcElement.parentNode.nodeName === 'A')) {
-		xPop = event.pageX;
-		yPop = event.pageY;
+		setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
 		createPopupArc();
 		link = event.srcElement.href || event.srcElement.parentNode.href;
 	}
@@ -116,8 +128,7 @@ document.body.addEventListener('click', (event) => {
 
 // Listen for context menu openings
 document.addEventListener('contextmenu', (event) => {
-	xPop = event.pageX;
-	yPop = event.pageY;
+	setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
 });
 
 // Receive messages from background script
