@@ -1,8 +1,16 @@
 const svgns = "http://www.w3.org/2000/svg";
 
+const defaultPrefs = {
+	size: 38,
+	angle: 120,
+	maxDelay: 60,
+	label: false
+};
+
 const size = 38;
 const angle = 120;
 const maxDelay = 60;
+const label = false;
 // Default properties of the svg arc, only d (degrees) is mutable
 let arcPr = {
 	cx: size / 2,
@@ -10,14 +18,12 @@ let arcPr = {
 	r: (size / 2) - 4,
 	d: angle
 };
-// Coordinates of the popup arc (for if we track mouse movement)
+// Coordinates of the knob (for if we track mouse movement)
 let xPop = 0;
 let yPop = 0;
-// Pointer coordinates (when popup arc is shown)
+// Pointer coordinates (when knob is shown)
 let xMouse = 0;
 let yMouse = 0;
-
-let shown = false; // not used for now...
 
 let link = '';
 
@@ -26,31 +32,35 @@ function handleMouseMove(event) {
 	xMouse = event.pageX;
 	yMouse = event.pageY;
 	dxMouse = xMouse - xPop + angle;
+	// update knob
 	if (0 < dxMouse && dxMouse <= 360) {
 		arcPr.d = dxMouse;
-		document.getElementById('oixs-popup-arc').setAttribute('d', buildPathData());
+		document.getElementById('oixs-svg-arc').setAttribute('d', buildPathData());
+		if (label) {
+			document.getElementById('oixs-label').innerHTML = Math.ceil(arcPr.d / (360 / maxDelay));
+		}
 	}
 }
 
-// Handle mouse click events while popup arc visible
+// Handle mouse click events while knob is visible
 function handleMouseClick(event) {
 	if (link) {
 		event.preventDefault();
 		let delay = (arcPr.d / (360 / maxDelay)) * 1000;
 		browser.runtime.sendMessage({action: 'start_timer', link: link, delay: delay});	
 		link = '';
-		removePopupArc();
+		removeControlKnob();
 	}
 }
 
 function handleMouseAuxClick(event) {
 	event.preventDefault();
-	removePopupArc();
+	removeControlKnob();
 }
 
 function handleKeyDown(event) {
 	if (event.code === 'Escape') {
-		removePopupArc();
+		removeControlKnob();
 	}
 }
 
@@ -58,7 +68,7 @@ function handleContextMenu(event) {
 	event.preventDefault();
 }
 
-function buildPathData() { //cx, cy, r, d) {
+function buildPathData() {
 	let rad = arcPr.d * (Math.PI / 180);
 	let x1 = arcPr.cx + arcPr.r * Math.cos(rad);
 	let y1 = arcPr.cy + arcPr.r * Math.sin(rad);
@@ -68,7 +78,7 @@ function buildPathData() { //cx, cy, r, d) {
 
 function drawArc() {
 	let arc = document.createElementNS(svgns, 'path');
-	arc.setAttribute('id', 'oixs-popup-arc');
+	arc.setAttribute('id', 'oixs-svg-arc');
 	arc.setAttribute('d', buildPathData());
 	arc.setAttribute('stroke', '#606060');
 	arc.setAttribute('stroke-width', 1);
@@ -78,16 +88,28 @@ function drawArc() {
 	return arc;
 }
 
-function createPopupArc() {
+function createControlKnob() {
 	let svgNode = document.createElementNS(svgns, 'svg');
-	svgNode.setAttribute('id', 'oixs-popup');
-	svgNode.setAttribute('width', size);
-	svgNode.setAttribute('height', size);
+	svgNode.setAttribute('id', 'oixs-svg');
+	svgNode.setAttribute('width', `${size}px`);
+	svgNode.setAttribute('height', `${size}px`);
 	svgNode.style.left = xPop + 'px';
 	svgNode.style.top = yPop + 'px';
 	svgNode.appendChild(drawArc());
 	document.body.appendChild(svgNode);
-	shown = !shown;
+
+	if (label) {
+		let labelSecs = document.createElement('div');
+		labelSecs.innerHTML = Math.ceil(arcPr.d / (360 / maxDelay));
+		labelSecs.setAttribute('id', 'oixs-label');
+		labelSecs.style.width = `${size}px`;
+		labelSecs.style.height = `${size}px`;
+		labelSecs.style.fontSize = `${Math.ceil(size / 2.6)}px`;
+		labelSecs.style.left = xPop + 'px';
+		labelSecs.style.top = yPop + 'px';
+		document.body.appendChild(labelSecs);
+	}
+
 	// add event listeners
 	document.body.addEventListener('mousemove', handleMouseMove);
 	document.body.addEventListener('click', handleMouseClick);
@@ -96,14 +118,16 @@ function createPopupArc() {
 	document.body.addEventListener('contextmenu', handleContextMenu);
 }
 
-function removePopupArc() {
-	document.body.removeChild(document.getElementById('oixs-popup'));
+function removeControlKnob() {
+	document.body.removeChild(document.getElementById('oixs-svg'));
+	if (label) {
+		document.body.removeChild(document.getElementById('oixs-label'));
+	}
 	document.body.removeEventListener('mousemove', handleMouseMove);
 	document.body.removeEventListener('click', handleMouseClick);
 	document.body.removeEventListener('auxclick', handleMouseAuxClick);
 	document.body.removeEventListener('keydown', handleKeyDown);
 	document.body.removeEventListener('contextmenu', handleContextMenu);
-	shown = !shown;
 	// reset starting angle
 	arcPr.d = angle;
 }
@@ -124,7 +148,7 @@ function setPopupArcCoords(pageX, pageY, clientX, clientY) {
 document.body.addEventListener('click', (event) => {
 	if (event.altKey && (event.srcElement.nodeName === 'A' || event.srcElement.parentNode.nodeName === 'A')) {
 		setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
-		createPopupArc();
+		createControlKnob();
 		link = event.srcElement.href || event.srcElement.parentNode.href;
 	}
 });
@@ -136,8 +160,8 @@ document.addEventListener('contextmenu', (event) => {
 
 // Receive messages from background script
 browser.runtime.onMessage.addListener((message) => {
-	if (message.action === 'create_arc') {
+	if (message.action === 'create_knob') {
 		link = message.data;
-		createPopupArc();
+		createControlKnob();
 	}
 });

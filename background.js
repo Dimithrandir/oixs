@@ -27,7 +27,7 @@ function handleLink(link, delay) {
 browser.contextMenus.onClicked.addListener((info, tab) => {
 	if (info.menuItemId === 'oixs') {
 		url = info.linkUrl || info.srcUrl;
-		browser.tabs.sendMessage(tab.id, {action: 'create_arc', data: url});
+		browser.tabs.sendMessage(tab.id, {action: 'create_knob', data: url});
 	}
 });
 
