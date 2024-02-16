@@ -1,11 +1,14 @@
 const svgns = "http://www.w3.org/2000/svg";
+
 const size = 38;
+const angle = 120;
+const maxDelay = 60;
 // Default properties of the svg arc, only d (degrees) is mutable
 let arcPr = {
 	cx: size / 2,
 	cy: size / 2,
 	r: (size / 2) - 4,
-	d: 120
+	d: angle
 };
 // Coordinates of the popup arc (for if we track mouse movement)
 let xPop = 0;
@@ -22,7 +25,7 @@ let link = '';
 function handleMouseMove(event) {
 	xMouse = event.pageX;
 	yMouse = event.pageY;
-	dxMouse = xMouse - xPop + 120;
+	dxMouse = xMouse - xPop + angle;
 	if (0 < dxMouse && dxMouse <= 360) {
 		arcPr.d = dxMouse;
 		document.getElementById('oixs-popup-arc').setAttribute('d', buildPathData());
@@ -33,7 +36,7 @@ function handleMouseMove(event) {
 function handleMouseClick(event) {
 	if (link) {
 		event.preventDefault();
-		let delay = (arcPr.d / 6) * 1000;
+		let delay = (arcPr.d / (360 / maxDelay)) * 1000;
 		browser.runtime.sendMessage({action: 'start_timer', link: link, delay: delay});	
 		link = '';
 		removePopupArc();
@@ -102,7 +105,7 @@ function removePopupArc() {
 	document.body.removeEventListener('contextmenu', handleContextMenu);
 	shown = !shown;
 	// reset starting angle
-	arcPr.d = 120;
+	arcPr.d = angle;
 }
 
 // Make sure the popup arc doesn't get out of screen
