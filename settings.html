@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="settings.css"/>
+	</head>
+	<body>
+		<form id="form">
+			<div class="form-row">
+				<label for"key">Key</label>
+				<select id="key">
+					<option value="alt">alt</option>
+					<option value="alt + ctrl">alt + ctrl</option>
+					<option value="ctrl + shift">ctrl + shift</option>
+				</select>
+			</div>
+			<div class="form-row">
+				<label for="delay">Max delay</label>
+				<input id="delay" type="number" min="1" value="60"/> 
+				<span>seconds</span>
+			</div>
+			<div class="form-row">
+				<label for="angle">Starting angle</label>
+				<input id="angle" type="number" min="1" max="360" value="120"/>
+				<span>degrees</span>
+			</div>
+			<div class="form-row">
+				<label for="size">Knob size</label>
+				<input id="size" type="number" min="10" max="100" value="38"/> 
+				<span>pixels</span>
+			</div>
+			<div class="form-row" style="display: flex">
+				<label>Knob position</label>
+				<div class="radio-group">
+					<input id="left" type="radio" name="position"/>
+					<label for="left">Left</label>
+					<input id="right" type="radio" name="position" checked/>
+					<label for="right">Right</label>
+				</div>
+			</div>
+			<div class="form-row">
+				<label for="label">Show label</label>
+				<input id="label" type="checkbox"/> 
+			</div>
+			<div class="form-row">
+				<label for="animation">Play animations</label>
+				<input id="animation" type="checkbox"/> 
+			</div>
+			<div class="form-row">
+				<label for="menu">Show in context menus</label>
+				<input id="menu" type="checkbox" checked/> 
+			</div>
+			<div class="form-row" style="display: flex; justify-content: end;">
+				<button type="reset">Defaults</button>
+				<button type="submit">Save</button>
+			</div>
+		</form>
+		<script src="settings.js"></script>
+	</body>
+</html>

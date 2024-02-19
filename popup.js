@@ -53,6 +53,11 @@ function getRemainingTime(start, delay) {
 }
 
 async function init() {
+	document.getElementById('settings-label').addEventListener('click', () => {
+		//document.getElementById('settings').style.display = (document.getElementById('settings').style.display == 'block') ? 'none' : 'block';
+		browser.runtime.openOptionsPage();
+	});
+
 	// Response is Array constructed from Map
 	let response = await browser.runtime.sendMessage({action: 'get_links'});
 	// No pending links
@@ -82,6 +87,7 @@ async function init() {
 			}
 		}
 	}, 500);
+
 }
 
 init();

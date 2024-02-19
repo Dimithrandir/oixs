@@ -15,11 +15,22 @@
 		"64": "img/oixs.svg",
 		"128": "img/oixs.svg"
 	},
+	
+	"options_ui": {
+		"page": "settings.html"
+	},
 
 	"permissions": [
 		"activeTab",
-		"contextMenus"
+		"contextMenus",
+		"storage"
 	],
+
+	"browser_specific_settings": {
+		"gecko": {
+			"id": "oixs@dimithrandir.me"
+		}
+	},
 
 	"background": {
 		"scripts": ["background.js"]

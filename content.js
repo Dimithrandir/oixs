@@ -1,16 +1,12 @@
 const svgns = "http://www.w3.org/2000/svg";
-
-const defaultPrefs = {
-	size: 38,
-	angle: 120,
-	maxDelay: 60,
-	label: false
-};
-
-const size = 38;
-const angle = 120;
-const maxDelay = 60;
-const label = false;
+// Default values
+let key = 'alt';
+let maxDelay = 60;
+let angle = 120;
+let size = 38;
+let leftSide = false;
+let label = false;
+let animation = false;
 // Default properties of the svg arc, only d (degrees) is mutable
 let arcPr = {
 	cx: size / 2,
@@ -18,6 +14,7 @@ let arcPr = {
 	r: (size / 2) - 4,
 	d: angle
 };
+
 // Coordinates of the knob (for if we track mouse movement)
 let xPop = 0;
 let yPop = 0;
@@ -26,6 +23,24 @@ let xMouse = 0;
 let yMouse = 0;
 
 let link = '';
+
+function updatePrefs(result) {
+	if (result) {
+		key = result.settings.key;
+		maxDelay = result.settings.delay;
+		angle = result.settings.angle;
+		size = result.settings.size;
+		leftSide = result.settings.left;
+		label = result.settings.label;
+		animation = result.settings.label;
+	}
+	arcPr = {
+		cx: size / 2,
+		cy: size / 2,
+		r: (size / 2) - 4,
+		d: angle
+	};
+}
 
 // Handle mousemove events while the context menu is open
 function handleMouseMove(event) {
@@ -134,19 +149,19 @@ function removeControlKnob() {
 
 // Make sure the popup arc doesn't get out of screen
 function setPopupArcCoords(pageX, pageY, clientX, clientY) {
-	// this is to be read from storage...
-	let rightSide = true;
-	if (rightSide) {
-		xPop = (clientX + size > window.innerWidth) ? pageX - size : pageX;
+	if (leftSide) {
+		xPop = (clientX - size < 0) ? pageX : pageX - size;
 	}
 	else {
-		xPop = (clientX - size < 0) ? pageX : pageX - size;
+		xPop = (clientX + size > window.innerWidth) ? pageX - size : pageX;
 	}
 	yPop = (clientY + size > window.innerHeight) ? pageY - size : pageY;
 }
 
 document.body.addEventListener('click', (event) => {
-	if (event.altKey && (event.srcElement.nodeName === 'A' || event.srcElement.parentNode.nodeName === 'A')) {
+	let keyCondition = (key === 'alt') ? event.altKey : (key === 'alt + ctrl') ? event.altKey && event.ctrlKey : event.ctrlKey && event.shiftKey;
+	if (keyCondition && (event.srcElement.nodeName === 'A' || event.srcElement.parentNode.nodeName === 'A')) {
+		event.preventDefault();
 		setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
 		createControlKnob();
 		link = event.srcElement.href || event.srcElement.parentNode.href;
@@ -158,10 +173,19 @@ document.addEventListener('contextmenu', (event) => {
 	setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
 });
 
-// Receive messages from background script
+// Load preferences from storage
+browser.storage.sync.get('settings').then(updatePrefs).catch((error) => {
+	//console.log('Error while reading from storage\n', error);
+});
+
+// Receive messages from background script or options
 browser.runtime.onMessage.addListener((message) => {
 	if (message.action === 'create_knob') {
 		link = message.data;
 		createControlKnob();
 	}
+	else if (message.action === 'update_settings') {
+		updatePrefs(message);
+	}
 });
+
