@@ -12,6 +12,8 @@ function saveSettings(event) {
 	};
 
 	browser.storage.sync.set({settings: prefs}).then(() => {
+		// tell background script to update context menu item
+		browser.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu});	
 		// update preferences for every open loaded tab (except those where content scripts aren't allowed)
 		browser.tabs.query({status: 'complete'}).then((tabs) => {
 			for (const tab of tabs) {

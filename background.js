@@ -1,9 +1,11 @@
 // Create the context menu item for oixs
-browser.contextMenus.create({
+const menuItem = {
 	id: 'oixs',
 	title: 'Open in X seconds',
 	contexts: ['link', 'image', 'video']
-});
+};
+
+browser.contextMenus.create(menuItem);
 
 // Keep all the pending links here
 let pendingLinks = new Map();
@@ -25,7 +27,7 @@ function handleLink(link, delay) {
 
 // Handle context menu item click event
 browser.contextMenus.onClicked.addListener((info, tab) => {
-	if (info.menuItemId === 'oixs') {
+	if (info.menuItemId === menuItem.id) {
 		url = info.linkUrl || info.srcUrl;
 		browser.tabs.sendMessage(tab.id, {action: 'create_knob', data: url});
 	}
@@ -56,6 +58,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			break;
 		case 'cancel_link':
 			pendingLinks.delete(message.link);
+			break;
+		case 'update_settings':
+			browser.contextMenus.update(menuItem.id, {visible: message.context_menus});
 			break;
 		default:
 			return;
