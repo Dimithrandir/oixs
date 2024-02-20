@@ -8,12 +8,13 @@ function saveSettings(event) {
 		left: document.getElementById('left').checked,
 		label: document.getElementById('label').checked,
 		animation: document.getElementById('animation').checked,
+		switching: document.getElementById('switching').checked,
 		menu: document.getElementById('menu').checked
 	};
 
 	browser.storage.sync.set({settings: prefs}).then(() => {
 		// tell background script to update context menu item
-		browser.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu});	
+		browser.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu, switching: prefs.switching});	
 		// update preferences for every open loaded tab (except those where content scripts aren't allowed)
 		browser.tabs.query({status: 'complete'}).then((tabs) => {
 			for (const tab of tabs) {
@@ -32,9 +33,10 @@ function loadSettings() {
 		document.getElementById('delay').value = result.settings.delay || 60;
 		document.getElementById('angle').value = result.settings.angle || 120;
 		document.getElementById('size').value = result.settings.size || 38;
-		document.getElementById('left').value = result.settings.left || false;
+		document.getElementById('left').checked = result.settings.left || false;
 		document.getElementById('label').checked = result.settings.label || false;
 		document.getElementById('animation').checked = result.settings.animation || false;
+		document.getElementById('switching').checked = result.settings.switching || false;
 		document.getElementById('menu').checked = result.settings.menu || true;
 	}).catch((error) => {
 		console.log('Error while reading from storage\n', error);

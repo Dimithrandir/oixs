@@ -32,7 +32,7 @@ function updatePrefs(result) {
 		size = result.settings.size;
 		leftSide = result.settings.left;
 		label = result.settings.label;
-		animation = result.settings.label;
+		animation = result.settings.animation;
 	}
 	arcPr = {
 		cx: size / 2,
@@ -46,7 +46,7 @@ function updatePrefs(result) {
 function handleMouseMove(event) {
 	xMouse = event.pageX;
 	yMouse = event.pageY;
-	dxMouse = xMouse - xPop + angle;
+	dxMouse = xMouse - xPop - (leftSide ? size : 0) + angle;
 	// update knob
 	if (0 < dxMouse && dxMouse <= 360) {
 		arcPr.d = dxMouse;
@@ -110,6 +110,7 @@ function createControlKnob() {
 	svgNode.setAttribute('height', `${size}px`);
 	svgNode.style.left = xPop + 'px';
 	svgNode.style.top = yPop + 'px';
+	svgNode.classList.add(animation ? 'animation-zoom-in-rotated' : false) ;
 	svgNode.appendChild(drawArc());
 	document.body.appendChild(svgNode);
 
@@ -122,6 +123,7 @@ function createControlKnob() {
 		labelSecs.style.fontSize = `${Math.ceil(size / 2.6)}px`;
 		labelSecs.style.left = xPop + 'px';
 		labelSecs.style.top = yPop + 'px';
+		labelSecs.classList.add(animation ? 'animation-zoom-in' : false);
 		document.body.appendChild(labelSecs);
 	}
 
@@ -134,9 +136,23 @@ function createControlKnob() {
 }
 
 function removeControlKnob() {
-	document.body.removeChild(document.getElementById('oixs-svg'));
-	if (label) {
-		document.body.removeChild(document.getElementById('oixs-label'));
+	if (animation) {
+		document.getElementById('oixs-svg').classList.add('animation-zoom-out-rotated');
+		if (label) {
+			document.getElementById('oixs-label').classList.add('animation-zoom-out');
+		}
+		setTimeout(() => {
+			document.body.removeChild(document.getElementById('oixs-svg'));
+			if (label) {
+				document.body.removeChild(document.getElementById('oixs-label'));
+			}
+		}, 100);
+	}
+	else {
+		document.body.removeChild(document.getElementById('oixs-svg'));
+		if (label) {
+			document.body.removeChild(document.getElementById('oixs-label'));
+		}
 	}
 	document.body.removeEventListener('mousemove', handleMouseMove);
 	document.body.removeEventListener('click', handleMouseClick);
@@ -175,7 +191,7 @@ document.addEventListener('contextmenu', (event) => {
 
 // Load preferences from storage
 browser.storage.sync.get('settings').then(updatePrefs).catch((error) => {
-	//console.log('Error while reading from storage\n', error);
+	//console.log('Error while reading from storage, will use default values\n', error);
 });
 
 // Receive messages from background script or options

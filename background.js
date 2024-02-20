@@ -5,10 +5,28 @@ const menuItem = {
 	contexts: ['link', 'image', 'video']
 };
 
-browser.contextMenus.create(menuItem);
-
+let switching = false;
 // Keep all the pending links here
 let pendingLinks = new Map();
+
+browser.contextMenus.create(menuItem);
+
+// Store default settings on install
+browser.runtime.onInstalled.addListener((details) => {
+	if (details.reason === 'install') {
+		browser.storage.sync.set({settings: {
+			key: 'alt',
+			delay: 60,
+			angle: 120,
+			size: 38,
+			left: false,
+			label: false,
+			animation: false,
+			switching: false,
+			menu: true
+		}});
+	}
+});
 
 function handleLink(link, delay) {
 	return new Promise((resolve, reject) => {
@@ -44,7 +62,7 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 					delay: message.delay
 				});
 			handleLink(message.link, message.delay).then((data) => {
-				browser.tabs.create({active: false, url: message.link});
+				browser.tabs.create({active: switching, url: message.link});
 				pendingLinks.delete(message.link);
 				sendResponse();
 			}).catch((error) => {});
@@ -53,13 +71,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			sendResponse({
 				pendingLinks: Array.from(pendingLinks)
 			});
-			// it's recommended to return a Promise instead of using sendResponse for firefox extensions
-			//return Promise.resolve({pendingLinks: pendingLinks});
 			break;
 		case 'cancel_link':
 			pendingLinks.delete(message.link);
 			break;
 		case 'update_settings':
+			switching = message.switching;
 			browser.contextMenus.update(menuItem.id, {visible: message.context_menus});
 			break;
 		default:

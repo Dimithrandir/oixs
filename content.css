@@ -24,3 +24,59 @@
 	font-family: sans-serif;
 	text-shadow: 0 0 5px #fff;
 }
+
+.animation-zoom-in {
+	animation-name: zoom-in;
+	animation-duration: 0.1s;
+}
+
+.animation-zoom-out {
+	animation-name: zoom-out;
+	animation-duration: 0.1s;
+}
+
+.animation-zoom-in-rotated {
+	animation-name: zoom-in-rotated;
+	animation-duration: 0.1s;
+}
+
+.animation-zoom-out-rotated {
+	animation-name: zoom-out-rotated;
+	animation-duration: 0.1s;
+}
+
+@keyframes zoom-in {
+	0% {
+		transform: scale(0);
+	}
+	100% {
+		transform: scale(100%);
+	}
+}
+
+@keyframes zoom-out {
+	0% {
+		transform: scale(100%);
+	}
+	100% {
+		transform: scale(0);
+	}
+}
+
+@keyframes zoom-in-rotated {
+	0% {
+		transform: rotate(-90deg) scale(0);
+	}
+	100% {
+		transform: rotate(-90deg) scale(100%);
+	}
+}
+
+@keyframes zoom-out-rotated {
+	0% {
+		transform: rotate(-90deg) scale(100%);
+	}
+	100% {
+		transform: rotate(-90deg) scale(0);
+	}
+}

@@ -1,8 +1,18 @@
+:root {
+	--bg-color: #fff;
+	--bg-color-dark: #f2f2f2;
+	--fg-color: #333;
+	--text-button-fg-color: #666;
+	--button-bg-color: #ccc;
+	--button-bg-color-hover: #f00;
+	--button-fg-color: #fff;
+}
+
 body {
-	background: #f2f2f2;
+	background: var(--bg-color-dark);
 	width: 320px;
 	font-family: sans-serif;
-	color: #333;
+	color: var(--fg-color);
 }
 
 h2 {
@@ -16,7 +26,7 @@ h2::after {
 	display: block;
 	height: 1px;
 	width: 100%;
-	background: #333;
+	background: var(--fg-color);
 	margin: 5px 0;
 }
 
@@ -25,12 +35,12 @@ h2::after {
 	display: block;
 	width: 100%;
 	text-align: center;
-	background: #fff;
+	background: var(--bg-color);
 	border-radius: 8px;
 }
 
 .pending-link-item {
-	background: #fff;
+	background: var(--bg-color);
 	margin: 5px 0;
 	display: flex;
 	padding: 2px 0;
@@ -54,7 +64,7 @@ h2::after {
 
 .pending-link-cancel {
 	margin: 0 5px;
-	background: #ccc;
+	background: var(--button-bg-color);
 	width: 20px;
 	height: 20px;
 	min-width: 20px;
@@ -71,7 +81,7 @@ h2::after {
 	left: 25%;
 	width: 50%;
 	height: 10%;
-	background: #fff;
+	background: var(--button-fg-color);
 }
 
 .pending-link-cancel::after {
@@ -81,49 +91,39 @@ h2::after {
 	left: 45%;
 	width: 10%;
 	height: 50%;
-	background: #fff;
+	background: var(--button-fg-color);
 }
 
 .pending-link-cancel:hover {
-	background: #f00;
+	background: var(--button-bg-color-hover);
 }
 
-#label-buttons {
+#text-buttons {
 	display: flex;
 	justify-content: flex-end;
 	margin-top: 6px;
 }
 
-.label-button {
+#text-buttons span {
 	font-size: 12px;
-	/*color: #00f;*/
-	color: #666;
+	color: var(--text-button-fg-color);
 	margin-left: 5px;
 }
 
-.label-button:hover {
-	color: #333;
+#text-buttons span:hover {
+	color: var(--fg-color);
 	cursor: pointer;
 	text-decoration: underline;	
 }
 
-#settings-button:hover {
-	cursor: pointer;
-}
-
-#settings-button:hover #gear-path {
-	fill: #00f;
-}
-
-#gear-path {
-	fill: #ccc;
-}
-
-#settings {
-	display: none;
-}
-
-#form-container {
-	font-size: 14px;
-	display: grid;
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg-color: #2b2c35;
+		--bg-color-dark: #23222b;
+		--fg-color: #c5c5c9;
+		--text-button-fg-color: #666;
+		--button-bg-color: #999;
+		--button-bg-color-hover: #ff8080;
+		--button-fg-color: #fafafa;
+	}
 }
