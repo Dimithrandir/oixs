@@ -18,7 +18,11 @@ body {
 h2 {
 	font-size: 16px;
 	font-weight: 400;
-	margin: 0 0 0 5px;
+	margin: 0;
+}
+
+h2 span {
+	margin-left: 5px;
 }
 
 h2::after {

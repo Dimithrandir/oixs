@@ -1,6 +1,6 @@
 {
 	"manifest_version": 2,
-	"name": "oixs",
+	"name": "Open in X seconds",
 	"version": "0.1",
 
 	"author": "Dimithrandir",
@@ -49,7 +49,7 @@
 			"16": "img/oixs.svg",
 			"32": "img/oixs.svg"
 		},
-		"default_title": "oixs",
+		"default_title": "Open in X seconds",
 		"default_popup": "popup.html"
 	}
 }
