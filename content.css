@@ -4,7 +4,7 @@
 	left: 300px;
 	transform-origin: 50%;
 	transform: rotate(-90deg);
-	z-index: 400000;
+	z-index: 4000000;
 }
 
 #oixs-svg path {
@@ -16,7 +16,7 @@
 	top: 200px;
 	left: 300px;
 	color: #000;
-	z-index: 400001;
+	z-index: 4000001;
 	display: flex;
 	align-items: center;
 	justify-content: center;
