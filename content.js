@@ -1,4 +1,4 @@
-const svgns = "http://www.w3.org/2000/svg";
+const svgns = 'http://www.w3.org/2000/svg';
 // Default values
 let key = 'alt';
 let maxDelay = 60;
@@ -15,14 +15,16 @@ let arcPr = {
 	d: angle
 };
 
-// Coordinates of the knob (for if we track mouse movement)
-let xPop = 0;
-let yPop = 0;
+// Coordinates of the knob
+let xKnob = 0;
+let yKnob = 0;
 // Pointer coordinates (when knob is shown)
 let xMouse = 0;
 let yMouse = 0;
 
 let link = '';
+// used to update knob position to adjust for edge cases or context menu knob creation
+let firstMouseMove = false;
 
 function updatePrefs(result) {
 	if (result) {
@@ -42,13 +44,20 @@ function updatePrefs(result) {
 	};
 }
 
-// Handle mousemove events while the context menu is open
+// Handle mousemove events while knob is visible
 function handleMouseMove(event) {
+	// overwrite knob coordinates on first mouse move to make calculations for edge cases easier
+	if (firstMouseMove) {
+		xKnob = event.pageX - (leftSide ? size : 0);
+		yKnob = event.pageY;
+		firstMouseMove = false;
+	}
 	xMouse = event.pageX;
 	yMouse = event.pageY;
-	dxMouse = xMouse - xPop - (leftSide ? size : 0) + angle;
+	dxMouse = xMouse - xKnob - (leftSide ? size : 0) + angle;
+	console.log(dxMouse);
 	// update knob
-	if (0 < dxMouse && dxMouse <= 360) {
+	if (0 < dxMouse && dxMouse < 360) {
 		arcPr.d = dxMouse;
 		document.getElementById('oixs-svg-arc').setAttribute('d', buildPathData());
 		if (label) {
@@ -98,8 +107,6 @@ function drawArc() {
 	arc.setAttribute('stroke', '#606060');
 	arc.setAttribute('stroke-width', 1);
 	arc.setAttribute('fill', '#ffffffcc');
-	//let animation = document.createElementNS(svgns, 'animate');
-	//animation.setAttribute('attributeName', '')
 	return arc;
 }
 
@@ -108,8 +115,8 @@ function createControlKnob() {
 	svgNode.setAttribute('id', 'oixs-svg');
 	svgNode.setAttribute('width', `${size}px`);
 	svgNode.setAttribute('height', `${size}px`);
-	svgNode.style.left = xPop + 'px';
-	svgNode.style.top = yPop + 'px';
+	svgNode.style.left = xKnob + 'px';
+	svgNode.style.top = yKnob + 'px';
 	svgNode.classList.add(animation ? 'animation-zoom-in-rotated' : false) ;
 	svgNode.appendChild(drawArc());
 	document.body.appendChild(svgNode);
@@ -121,8 +128,8 @@ function createControlKnob() {
 		labelSecs.style.width = `${size}px`;
 		labelSecs.style.height = `${size}px`;
 		labelSecs.style.fontSize = `${Math.ceil(size / 2.6)}px`;
-		labelSecs.style.left = xPop + 'px';
-		labelSecs.style.top = yPop + 'px';
+		labelSecs.style.left = xKnob + 'px';
+		labelSecs.style.top = yKnob + 'px';
 		labelSecs.classList.add(animation ? 'animation-zoom-in' : false);
 		document.body.appendChild(labelSecs);
 	}
@@ -133,6 +140,8 @@ function createControlKnob() {
 	document.body.addEventListener('auxclick', handleMouseAuxClick);
 	document.body.addEventListener('keydown', handleKeyDown);
 	document.body.addEventListener('contextmenu', handleContextMenu);
+
+	firstMouseMove = true;
 }
 
 function removeControlKnob() {
@@ -161,32 +170,34 @@ function removeControlKnob() {
 	document.body.removeEventListener('contextmenu', handleContextMenu);
 	// reset starting angle
 	arcPr.d = angle;
+	// reset flag in case mouse hasn't been moved at all after knob was shown
+	firstMouseMove = false;
 }
 
-// Make sure the popup arc doesn't get out of screen
-function setPopupArcCoords(pageX, pageY, clientX, clientY) {
+// Make sure the control knob doesn't get out of screen
+function setKnobCoords(pageX, pageY, clientX, clientY) {
 	if (leftSide) {
-		xPop = (clientX - size < 0) ? pageX : pageX - size;
+		xKnob = (clientX - size < 0) ? pageX : pageX - size;
 	}
 	else {
-		xPop = (clientX + size > window.innerWidth) ? pageX - size : pageX;
+		xKnob = (clientX + size > window.innerWidth) ? pageX - size : pageX;
 	}
-	yPop = (clientY + size > window.innerHeight) ? pageY - size : pageY;
+	yKnob = (clientY + size > window.innerHeight) ? pageY - size : pageY;
 }
 
 document.body.addEventListener('click', (event) => {
 	let keyCondition = (key === 'alt') ? event.altKey : (key === 'alt + ctrl') ? event.altKey && event.ctrlKey : event.ctrlKey && event.shiftKey;
 	if (keyCondition && (event.srcElement.nodeName === 'A' || event.srcElement.parentNode.nodeName === 'A')) {
 		event.preventDefault();
-		setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
+		setKnobCoords(event.pageX, event.pageY, event.clientX, event.clientY);
 		createControlKnob();
 		link = event.srcElement.href || event.srcElement.parentNode.href;
 	}
 });
 
-// Listen for context menu openings
+// Listen for any context menu openings
 document.addEventListener('contextmenu', (event) => {
-	setPopupArcCoords(event.pageX, event.pageY, event.clientX, event.clientY);
+	setKnobCoords(event.pageX, event.pageY, event.clientX, event.clientY);
 });
 
 // Load preferences from storage

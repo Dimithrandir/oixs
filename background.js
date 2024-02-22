@@ -1,10 +1,10 @@
-// Create the context menu item for oixs
+// Context menu item for oixs
 const menuItem = {
 	id: 'oixs',
 	title: 'Open in X seconds',
 	contexts: ['link', 'image', 'video']
 };
-
+// whether to switch to the new tab upon opening it
 let switching = false;
 // Keep all the pending links here
 let pendingLinks = new Map();
@@ -51,7 +51,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 	}
 });
 
-// Receive messages, from content script or popup
+// Receive messages, from content script, popup or settings
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	switch (message.action) {
 		case 'start_timer':
