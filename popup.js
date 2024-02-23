@@ -22,12 +22,12 @@ function createRow(i, link, time) {
 
 	let linkSpanNode = document.createElement('span');
 	let linkSliced = link.endsWith('/') ? link.slice(0, -1) : link;
-	linkSpanNode.innerHTML = linkSliced.split('://').pop();
+	linkSpanNode.textContent = linkSliced.split('://').pop();
 	linkSpanNode.classList.add('pending-link-address');
 	itemNode.appendChild(linkSpanNode);
 
 	let delaySpanNode = document.createElement('span');
-	delaySpanNode.innerHTML = time;
+	delaySpanNode.textContent = time;
 	delaySpanNode.classList.add('pending-link-timer');
 	itemNode.appendChild(delaySpanNode);
 
@@ -76,7 +76,7 @@ async function init() {
 		for (let i = 0; i < response.pendingLinks.length; i++) {
 			let remainingTime = getRemainingTime(response.pendingLinks[i][1].start, response.pendingLinks[i][1].delay);
 			if (remainingTime > 0) {
-				document.getElementById(`pending-link-item-${i}`).querySelector('.pending-link-timer').innerHTML = remainingTime;	
+				document.getElementById(`pending-link-item-${i}`).querySelector('.pending-link-timer').textContent = remainingTime;	
 			}
 			else {
 				document.getElementById(`pending-link-item-${i}`).style.display = 'none';

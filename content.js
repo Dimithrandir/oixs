@@ -60,7 +60,7 @@ function handleMouseMove(event) {
 		arcPr.d = dxMouse;
 		document.getElementById('oixs-svg-arc').setAttribute('d', buildPathData());
 		if (label) {
-			document.getElementById('oixs-label').innerHTML = Math.ceil(arcPr.d / (360 / maxDelay));
+			document.getElementById('oixs-label').textContent = Math.ceil(arcPr.d / (360 / maxDelay));
 		}
 	}
 }
@@ -122,7 +122,7 @@ function createControlKnob() {
 
 	if (label) {
 		let labelSecs = document.createElement('div');
-		labelSecs.innerHTML = Math.ceil(arcPr.d / (360 / maxDelay));
+		labelSecs.textContent = Math.ceil(arcPr.d / (360 / maxDelay));
 		labelSecs.setAttribute('id', 'oixs-label');
 		labelSecs.style.width = `${size}px`;
 		labelSecs.style.height = `${size}px`;
