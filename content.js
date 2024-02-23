@@ -55,7 +55,6 @@ function handleMouseMove(event) {
 	xMouse = event.pageX;
 	yMouse = event.pageY;
 	dxMouse = xMouse - xKnob - (leftSide ? size : 0) + angle;
-	console.log(dxMouse);
 	// update knob
 	if (0 < dxMouse && dxMouse < 360) {
 		arcPr.d = dxMouse;

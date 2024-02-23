@@ -1,11 +1,14 @@
 {
 	"manifest_version": 2,
 	"name": "Open in X seconds",
-	"version": "0.1",
+	"version": "1.0",
 
-	"author": "Dimithrandir",
+	"developer": {
+		"name": "Dimithrandir",
+		"url": "https://github.com/Dimithrandir"
+	},
 
-	"description": "Open links with a delay",
+	"description": "Opens links with a delay.",
 	"homepage_url": "https://github.com/Dimithrandir/oixs",
 
 	"icons": {
