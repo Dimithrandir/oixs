@@ -108,13 +108,14 @@ h2::after {
 	margin-top: 6px;
 }
 
-#text-buttons span {
+#text-buttons span, a {
 	font-size: 12px;
 	color: var(--text-button-fg-color);
 	margin-left: 5px;
+	text-decoration: none;
 }
 
-#text-buttons span:hover {
+#text-buttons span:hover, a:hover {
 	color: var(--fg-color);
 	cursor: pointer;
 	text-decoration: underline;	
