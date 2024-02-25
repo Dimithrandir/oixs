@@ -5,4 +5,4 @@ Open in X seconds (oixs) is a web extension for Firefox that allows you to open 
 
 ## Demo
 
-https://github.com/Dimithrandir/oixs/blob/master/demo.mp4
+https://github.com/Dimithrandir/oixs/raw/master/demo.mp4
