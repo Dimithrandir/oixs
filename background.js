@@ -30,7 +30,7 @@ browser.runtime.onInstalled.addListener((details) => {
 
 function handleLink(link, delay) {
 	return new Promise((resolve, reject) => {
-		setTimeout(() => {
+		let timeoutId = setTimeout(() => {
 			// resolve if link is still pending (still not deleted from pendingLinks)
 			if ([...pendingLinks.keys()].includes(link)) {
 				resolve();	
@@ -40,6 +40,11 @@ function handleLink(link, delay) {
 				reject();
 			}
 		}, delay);
+		pendingLinks.set(link,
+			{
+				scheduledTime: pendingLinks.get(link).scheduledTime,
+				timeoutId: timeoutId
+			});
 	});
 }
 
@@ -55,7 +60,15 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	switch (message.action) {
 		case 'start_timer':
-			pendingLinks.set(message.link, new Date().getTime() + message.delay);
+			// clear timeout for message.link if it exists
+			if ([...pendingLinks.keys()].includes(message.link)) {
+				clearTimeout(pendingLinks.get(message.link).timeoutId);
+			}
+			pendingLinks.set(message.link,
+				{
+					scheduledTime: new Date().getTime() + message.delay,
+					timeoutId: -1
+				});
 			handleLink(message.link, message.delay).then((data) => {
 				browser.tabs.create({active: switching, url: message.link});
 				pendingLinks.delete(message.link);

@@ -68,13 +68,13 @@ async function init() {
 	document.getElementById('no-pending-links').style.display = 'none';
 	// Create pending links list
 	for (let i = 0; i < response.pendingLinks.length; i++) {
-		document.getElementById('pending-links-list').appendChild(createRow(i, response.pendingLinks[i][0], getRemainingTime(response.pendingLinks[i][1])));
+		document.getElementById('pending-links-list').appendChild(createRow(i, response.pendingLinks[i][0], getRemainingTime(response.pendingLinks[i][1].scheduledTime)));
 	}
 
 	// Update remaining time display every 500 millis, once it's <= 0 hide the element
 	setInterval(() => {
 		for (let i = 0; i < response.pendingLinks.length; i++) {
-			let remainingTime = getRemainingTime(response.pendingLinks[i][1]);
+			let remainingTime = getRemainingTime(response.pendingLinks[i][1].scheduledTime);
 			if (remainingTime > 0) {
 				document.getElementById(`pending-link-item-${i}`).querySelector('.pending-link-timer').textContent = remainingTime;	
 			}
