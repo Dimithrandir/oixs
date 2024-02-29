@@ -1,7 +1,7 @@
 {
 	"manifest_version": 2,
 	"name": "Open in X seconds",
-	"version": "1.1",
+	"version": "1.0.1",
 
 	"developer": {
 		"name": "Dimithrandir",
