@@ -55,12 +55,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 	switch (message.action) {
 		case 'start_timer':
-			pendingLinks.set(
-				message.link,
-				{
-					start: new Date().getTime(),
-					delay: message.delay
-				});
+			pendingLinks.set(message.link, new Date().getTime() + message.delay);
 			handleLink(message.link, message.delay).then((data) => {
 				browser.tabs.create({active: switching, url: message.link});
 				pendingLinks.delete(message.link);

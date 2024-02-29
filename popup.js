@@ -48,8 +48,8 @@ function createRow(i, link, time) {
 	return itemNode;
 }
 
-function getRemainingTime(start, delay) {
-	return Math.ceil((delay - (new Date().getTime() - start)) / 1000);
+function getRemainingTime(scheduledTime) {
+	return Math.ceil((scheduledTime - (new Date().getTime())) / 1000);
 }
 
 async function init() {
@@ -68,13 +68,13 @@ async function init() {
 	document.getElementById('no-pending-links').style.display = 'none';
 	// Create pending links list
 	for (let i = 0; i < response.pendingLinks.length; i++) {
-		document.getElementById('pending-links-list').appendChild(createRow(i, response.pendingLinks[i][0], getRemainingTime(response.pendingLinks[i][1].start, response.pendingLinks[i][1].delay)));
+		document.getElementById('pending-links-list').appendChild(createRow(i, response.pendingLinks[i][0], getRemainingTime(response.pendingLinks[i][1])));
 	}
 
 	// Update remaining time display every 500 millis, once it's <= 0 hide the element
 	setInterval(() => {
 		for (let i = 0; i < response.pendingLinks.length; i++) {
-			let remainingTime = getRemainingTime(response.pendingLinks[i][1].start, response.pendingLinks[i][1].delay);
+			let remainingTime = getRemainingTime(response.pendingLinks[i][1]);
 			if (remainingTime > 0) {
 				document.getElementById(`pending-link-item-${i}`).querySelector('.pending-link-timer').textContent = remainingTime;	
 			}
