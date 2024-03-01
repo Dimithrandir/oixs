@@ -33,11 +33,11 @@ function loadSettings() {
 		document.getElementById('delay').value = result.settings.delay || 60;
 		document.getElementById('angle').value = result.settings.angle || 120;
 		document.getElementById('size').value = result.settings.size || 38;
-		document.getElementById('left').checked = result.settings.left || false;
-		document.getElementById('label').checked = result.settings.label || false;
-		document.getElementById('animation').checked = result.settings.animation || false;
-		document.getElementById('switching').checked = result.settings.switching || false;
-		document.getElementById('menu').checked = result.settings.menu || true;
+		document.getElementById('left').checked = result.settings.left;
+		document.getElementById('label').checked = result.settings.label;
+		document.getElementById('animation').checked = result.settings.animation;
+		document.getElementById('switching').checked = result.settings.switching;
+		document.getElementById('menu').checked = result.settings.menu;
 	}).catch((error) => {
 		console.log('Error while reading from storage\n', error);
 	});
