@@ -15,7 +15,7 @@
 		"64": "img/oixs-64.png",
 		"128": "img/oixs-128.png"
 	},
-	
+
 	"options_ui": {
 		"page": "settings.html"
 	},

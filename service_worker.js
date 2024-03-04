@@ -33,7 +33,7 @@ function handleLink(link, delay) {
 		let timeoutId = setTimeout(() => {
 			// resolve if link is still pending (still not deleted from pendingLinks)
 			if ([...pendingLinks.keys()].includes(link)) {
-				resolve();	
+				resolve();
 			}
 			// reject if it's been canceled in the meantime
 			else {

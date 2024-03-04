@@ -72,7 +72,7 @@ function handleMouseClick(event) {
 	if (link) {
 		event.preventDefault();
 		let delay = (arcPr.d / (360 / maxDelay)) * 1000;
-		webext.runtime.sendMessage({action: 'start_timer', link: link, delay: delay});	
+		webext.runtime.sendMessage({action: 'start_timer', link: link, delay: delay});
 		link = '';
 		removeControlKnob();
 	}

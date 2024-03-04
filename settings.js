@@ -17,7 +17,7 @@ function saveSettings(event) {
 
 	webext.storage.sync.set({settings: prefs}).then(() => {
 		// tell background script to update context menu item
-		webext.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu, switching: prefs.switching});	
+		webext.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu, switching: prefs.switching});
 		// update preferences for every open loaded tab (except those where content scripts aren't allowed)
 		webext.tabs.query({status: 'complete'}).then((tabs) => {
 			for (const tab of tabs) {
