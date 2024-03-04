@@ -1,3 +1,6 @@
+// Make API browser agnostic
+const webext = ( typeof browser === 'object' ) ? browser : chrome;
+
 // Hide the links list, show the "empty list" label
 function showEmptyList() {
 	document.getElementById('pending-links-list').style.display = 'none';
@@ -37,7 +40,7 @@ function createRow(i, link, time) {
 		// Hide current item
 		document.getElementById(`pending-link-item-${i}`).style.display = 'none';
 		// Cancel pending promise in background
-		browser.runtime.sendMessage({action: 'cancel_link', link: link});
+		webext.runtime.sendMessage({action: 'cancel_link', link: link});
 		// It's 1 because we count the label (id='pending-links-label') too
 		if (getListItemsNum() == 1) {
 			showEmptyList();
@@ -54,14 +57,14 @@ function getRemainingTime(scheduledTime) {
 
 async function init() {
 	document.getElementById('settings-label').addEventListener('click', () => {
-		browser.runtime.openOptionsPage();
+		webext.runtime.openOptionsPage();
 	});
 
 	// Response is Array constructed from Map
-	let response = await browser.runtime.sendMessage({action: 'get_links'});
+	let response = await webext.runtime.sendMessage({action: 'get_links'});
 	// No pending links
 	if (response.pendingLinks.length == 0) {
-		showEmptyList();	
+		showEmptyList();
 		return;
 	}
 

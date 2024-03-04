@@ -1,3 +1,6 @@
+// Make API browser agnostic
+const webext = ( typeof browser === 'object' ) ? browser : chrome;
+
 function saveSettings(event) {
 	event.preventDefault();
 	let prefs = {
@@ -12,13 +15,13 @@ function saveSettings(event) {
 		menu: document.getElementById('menu').checked
 	};
 
-	browser.storage.sync.set({settings: prefs}).then(() => {
+	webext.storage.sync.set({settings: prefs}).then(() => {
 		// tell background script to update context menu item
-		browser.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu, switching: prefs.switching});	
+		webext.runtime.sendMessage({action: 'update_settings', context_menus: prefs.menu, switching: prefs.switching});	
 		// update preferences for every open loaded tab (except those where content scripts aren't allowed)
-		browser.tabs.query({status: 'complete'}).then((tabs) => {
+		webext.tabs.query({status: 'complete'}).then((tabs) => {
 			for (const tab of tabs) {
-				browser.tabs.sendMessage(tab.id, {action: 'update_settings', settings: prefs}).catch((error) => {});
+				webext.tabs.sendMessage(tab.id, {action: 'update_settings', settings: prefs}).catch((error) => {});
 			}
 		}).catch((error) => {
 			console.log('Error while writing to storage\n', error);
@@ -28,7 +31,7 @@ function saveSettings(event) {
 }
 
 function loadSettings() {
-	browser.storage.sync.get('settings').then((result) => {
+	webext.storage.sync.get('settings').then((result) => {
 		document.getElementById('key').value = result.settings.key || 'alt';
 		document.getElementById('delay').value = result.settings.delay || 60;
 		document.getElementById('angle').value = result.settings.angle || 120;

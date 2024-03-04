@@ -1,3 +1,5 @@
+// Make API browser agnostic
+const webext = ( typeof browser === 'object' ) ? browser : chrome;
 const svgns = 'http://www.w3.org/2000/svg';
 // Default values
 let key = 'alt';
@@ -70,7 +72,7 @@ function handleMouseClick(event) {
 	if (link) {
 		event.preventDefault();
 		let delay = (arcPr.d / (360 / maxDelay)) * 1000;
-		browser.runtime.sendMessage({action: 'start_timer', link: link, delay: delay});	
+		webext.runtime.sendMessage({action: 'start_timer', link: link, delay: delay});	
 		link = '';
 		removeControlKnob();
 	}
@@ -200,12 +202,12 @@ document.addEventListener('contextmenu', (event) => {
 });
 
 // Load preferences from storage
-browser.storage.sync.get('settings').then(updatePrefs).catch((error) => {
+webext.storage.sync.get('settings').then(updatePrefs).catch((error) => {
 	//console.log('Error while reading from storage, will use default values\n', error);
 });
 
 // Receive messages from background script or options
-browser.runtime.onMessage.addListener((message) => {
+webext.runtime.onMessage.addListener((message) => {
 	if (message.action === 'create_knob') {
 		link = message.data;
 		createControlKnob();

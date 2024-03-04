@@ -1,22 +1,19 @@
 {
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"name": "Open in X seconds",
-	"version": "1.0.2",
+	"version": "1.1",
 
-	"developer": {
-		"name": "Dimithrandir",
-		"url": "https://github.com/Dimithrandir"
-	},
+	"author": "Dimithrandir",
 
 	"description": "Opens links with a delay.",
 	"homepage_url": "https://github.com/Dimithrandir/oixs",
 
 	"icons": {
-		"16": "img/oixs-small.svg",
-		"32": "img/oixs.svg",
-		"48": "img/oixs.svg",
-		"64": "img/oixs.svg",
-		"128": "img/oixs.svg"
+		"16": "img/oixs-16.png",
+		"32": "img/oixs-32.png",
+		"48": "img/oixs-48.png",
+		"64": "img/oixs-64.png",
+		"128": "img/oixs-128.png"
 	},
 	
 	"options_ui": {
@@ -25,18 +22,13 @@
 
 	"permissions": [
 		"activeTab",
+		"alarms",
 		"contextMenus",
 		"storage"
 	],
 
-	"browser_specific_settings": {
-		"gecko": {
-			"id": "oixs@dimithrandir.me"
-		}
-	},
-
 	"background": {
-		"scripts": ["background.js"]
+		"service_worker": "service_worker.js"
 	},
 
 	"content_scripts": [
@@ -47,10 +39,10 @@
 		}
 	],
 
-	"browser_action": {
+	"action": {
 		"default_icon": {
-			"16": "img/oixs-small.svg",
-			"32": "img/oixs.svg"
+			"16": "img/oixs-16.png",
+			"32": "img/oixs-32.png"
 		},
 		"default_title": "Open in X seconds",
 		"default_popup": "popup.html"
