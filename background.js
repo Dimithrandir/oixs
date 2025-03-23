@@ -28,6 +28,16 @@ browser.runtime.onInstalled.addListener((details) => {
 	}
 });
 
+function updateBadge() {
+	browser.browserAction.setBadgeBackgroundColor({
+		color: '#000080'
+	});
+	let number = [...pendingLinks.keys()].length;
+	browser.browserAction.setBadgeText({
+		text: '' + (!number ? '' : number)
+	});
+}
+
 function handleLink(link, delay) {
 	return new Promise((resolve, reject) => {
 		let timeoutId = setTimeout(() => {
@@ -72,16 +82,19 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 			handleLink(message.link, message.delay).then((data) => {
 				browser.tabs.create({active: switching, url: message.link});
 				pendingLinks.delete(message.link);
+				updateBadge();
 				sendResponse();
 			}).catch((error) => {});
+			updateBadge();
 			break;
 		case 'get_links':
 			sendResponse({
-				pendingLinks: Array.from(pendingLinks)
+				pendingLinks: [...pendingLinks]
 			});
 			break;
 		case 'cancel_link':
 			pendingLinks.delete(message.link);
+			updateBadge();
 			break;
 		case 'update_settings':
 			switching = message.switching;
