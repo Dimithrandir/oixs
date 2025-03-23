@@ -27,6 +27,23 @@ chrome.runtime.onInstalled.addListener((details) => {
 	chrome.contextMenus.create(menuItem);
 });
 
+// Clear any alarms from previous session on startup
+chrome.runtime.onStartup.addListener(() => {
+	chrome.alarms.clearAll();
+});
+
+function updateBadge() {
+	chrome.alarms.getAll().then((alarms) => {
+		chrome.action.setBadgeBackgroundColor({
+			color: '#000080'
+		});
+		let number = alarms.length + [...pendingLinks.keys()].length;
+		chrome.action.setBadgeText({
+			text: '' + (!number ? '' : number)
+		});
+	});
+}
+
 // Used only when delay < 30s
 function handleLink(link, delay) {
 	return new Promise((resolve, reject) => {
@@ -66,6 +83,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 // Handle alarms firing off
 chrome.alarms.onAlarm.addListener((alarmInfo) => {
 	openLink(alarmInfo.name);
+	updateBadge();
 });
 
 // Receive messages, from content script, popup or settings
@@ -97,13 +115,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				handleLink(message.link, message.delay).then((data) => {
 					openLink(message.link);
 					pendingLinks.delete(message.link);
+					updateBadge();
 					sendResponse();
 				}).catch((error) => {});
 			}
+			updateBadge();
 			break;
 		case 'get_links':
 			chrome.alarms.getAll().then((alarms) => {
-				let responseLinks = Array.from(pendingLinks);
+				let responseLinks = [...pendingLinks];
 				for (const alarm of alarms) {
 					responseLinks.push([alarm.name, {scheduledTime: alarm.scheduledTime, timeoutId: -1}]);
 				}
@@ -119,6 +139,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 				if (!cleared) {
 					pendingLinks.delete(message.link);
 				}
+				updateBadge();
 			});
 			break;
 		case 'update_settings':
